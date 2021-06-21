@@ -127,15 +127,33 @@ export default {
     addContact: function (e) {
       e.preventDefault()
       if (this.isEdit) {
-        this.schedule[this.contact.index] = { ...this.contact }
-        this.isEdit = false
-        this.contact = { name: '', last_name: '', birthday: '', phone: '' }
+        if (this.validator) {
+          this.schedule[this.contact.index] = { ...this.contact }
+          this.isEdit = false
+          this.contact = { name: '', last_name: '', birthday: '', phone: '' }
+          this.$swal({
+            title: 'Éxitoso',
+            text: 'Contacto editado con éxito',
+            type: 'success',
+            showCancelButton: false,
+            showCloseButton: true,
+            showLoaderOnConfirm: false
+          })
+        }
       } else {
         if (this.validator) {
           this.count++
           this.contact.id = this.count
           this.schedule.push(this.contact)
           this.contact = { name: '', last_name: '', birthday: '', phone: '' }
+          this.$swal({
+            title: 'Éxitoso',
+            text: 'Contacto agregado con éxito',
+            type: 'success',
+            showCancelButton: false,
+            showCloseButton: true,
+            showLoaderOnConfirm: false
+          })
         }
       }
     },
@@ -146,9 +164,21 @@ export default {
     },
 
     deleteContact: function (index) {
-      if (confirm('¿Estás seguro de que quieres borrar este contacto?')) {
-        this.schedule.splice(index, 1)
-      }
+      this.$swal({
+        title: '¿Estás seguro de que quieres borrar este contacto?',
+        text: 'No hay marcha atrás',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        showCloseButton: true,
+        showLoaderOnConfirm: true
+      }).then((result) => {
+        if (result.value) {
+          this.schedule.splice(index, 1)
+          this.$swal('Eliminado', 'Eliminación éxitosa', 'success')
+        }
+      })
     }
   },
 
